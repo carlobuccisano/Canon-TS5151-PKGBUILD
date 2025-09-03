@@ -1,5 +1,5 @@
 # Maintainer: Carlo Buccisano <archlinux AT bcarlo.mozmail.com>
-pkgname="cnijfilter2"
+pkgname="cnijfilter2_ts5151"
 pkgver="5.50"
 pkgrel="1"
 pkgdesc="Cups driver for printer Canon PIXMA TS5100 series"
@@ -10,17 +10,19 @@ depends=('cups' 'libcups')
 makedepends=('automake' 'autoconf')
 provides=('cmdtocanonij2' 'cmdtocanonij3' 'cnijbe2' 'lgmon3' 'rastertocanonij' 'tocanonij' 'tocnpwg')
 conflicts=('cnijfilter' 'cnijfilter-mg3600')
-source=("${pkgname}-${pkgver}.tar.gz::http://pdisp01.c-wss.com/gdl/WWUFORedirectTarget.do?id=MDEwMDAwOTExMDAx&cmp=ABX&lang=EN")
+source=("${pkgname}-${pkgver}-${pkgrel}.tar.gz::https://gdlp01.c-wss.com/gds/0/0100009110/01/cnijfilter2-source-5.50-1.tar.gz")
 sha256sums=('SKIP')
+
 prepare() {
-	cd "$pkgname-source-$pkgver-$pkgrel"
+	mv "cnijfilter2-source-$pkgver-$pkgrel" "$pkgname-$pkgver-$pkgrel"
+	cd "$pkgname-$pkgver-$pkgrel"
 	sed -i '39 a #include <stdlib.h>' 'lgmon3/src/keytext.c'    # They use free() without including stdlib
 	sed -i '50,52d' 'lgmon3/src/common/libcnnet2_type.h'	    # They redefine bool type, which raises an error with GCC
 	sed -e '/GET_PROTOCOL/ s:^int:extern &:g' -i 'lgmon3/src/cnijlgmon3.c'   # They define multiple times the function GET_PROTOCOL, so we use extern
 }
 
 build() {
-	cd "$pkgname-source-$pkgver-$pkgrel"
+	cd "$pkgname-$pkgver-$pkgrel"
 	
 	pushd cmdtocanonij2
 		./autogen.sh --prefix=/usr \
@@ -70,7 +72,7 @@ build() {
 
 check() {
 
-	cd "$pkgname-source-$pkgver-1"
+	cd "$pkgname-$pkgver-$pkgrel"
 
     pushd cmdtocanonij2
     make check
@@ -108,7 +110,7 @@ package() {
     mkdir -p "$pkgdir/usr/lib/cups/backend"
     mkdir -p "$pkgdir/usr/share/cups/model"
 
-    cd "$pkgname-source-$pkgver-1"
+    cd "$pkgname-$pkgver-$pkgrel"
 
 	install -m644 com/ini/cnnet.ini "$pkgdir/usr/lib/bjlib2"
     install -sm755 com/libs_bin64/*.so.* "$pkgdir/usr/lib"
