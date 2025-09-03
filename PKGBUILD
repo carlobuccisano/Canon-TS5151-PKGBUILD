@@ -3,7 +3,7 @@
 # NOTE: Please fill out the license field for your package! If it is unknown,
 # then please put 'unknown'.
 
-# Maintainer: Carlo Buccisano <archlinux@bcarlo.mozmail.com>
+# Maintainer: Carlo Buccisano <archlinux AT bcarlo.mozmail.com>
 pkgname="cnijfilter2"
 pkgver="5.50"
 pkgrel="1"
