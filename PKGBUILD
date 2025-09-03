@@ -1,43 +1,22 @@
-# This is an example PKGBUILD file. Use this as a start to creating your own,
-# and remove these comments. For more information, see 'man PKGBUILD'.
-# NOTE: Please fill out the license field for your package! If it is unknown,
-# then please put 'unknown'.
-
 # Maintainer: Carlo Buccisano <archlinux AT bcarlo.mozmail.com>
 pkgname="cnijfilter2"
 pkgver="5.50"
 pkgrel="1"
-#epoch=
 pkgdesc="Cups driver for printer Canon PIXMA TS5100 series"
 arch=("x86_64")
 url="https://www.canon.co.uk/support/consumer/products/printers/pixma/ts-series/pixma-ts5151.html?type=drivers&os=Linux%20(64-bit)"
 license=('GPL' 'custom:canon')
-#groups=()
 depends=('cups' 'libcups')
 makedepends=('automake' 'autoconf')
-#checkdepends=()
-#optdepends=()
 provides=('cmdtocanonij2' 'cmdtocanonij3' 'cnijbe2' 'lgmon3' 'rastertocanonij' 'tocanonij' 'tocnpwg')
 conflicts=('cnijfilter' 'cnijfilter-mg3600')
-#replaces=()
-#backup=()
-#options=()
-#install=
-#changelog=
 source=("${pkgname}-${pkgver}.tar.gz::http://pdisp01.c-wss.com/gdl/WWUFORedirectTarget.do?id=MDEwMDAwOTExMDAx&cmp=ABX&lang=EN")
-	#"$pkgname-$pkgver.tar.gz"
-        #"$pkgname-$pkgver.patch")
-#noextract=()
 sha256sums=('SKIP')
-#validpgpkeys=()
-
 prepare() {
 	cd "$pkgname-source-$pkgver-$pkgrel"
 	sed -i '39 a #include <stdlib.h>' 'lgmon3/src/keytext.c'    # They use free() without including stdlib
 	sed -i '50,52d' 'lgmon3/src/common/libcnnet2_type.h'	    # They redefine bool type, which raises an error with GCC
 	sed -e '/GET_PROTOCOL/ s:^int:extern &:g' -i 'lgmon3/src/cnijlgmon3.c'   # They define multiple times the function GET_PROTOCOL, so we use extern
-
-	#patch -p1 -i "$srcdir/$pkgname-$pkgver.patch"
 }
 
 build() {
@@ -87,8 +66,6 @@ build() {
 		./autogen.sh --prefix=/usr
 		make
 	popd
-	#./configure --prefix=/usr
-	#make
 }
 
 check() {
@@ -122,8 +99,6 @@ check() {
     pushd tocnpwg
     make check
     popd
-	#cd "$pkgname-$pkgver"
-	#make -k check
 }
 
 package() {
@@ -171,6 +146,4 @@ package() {
     pushd tocnpwg
         make DESTDIR="$pkgdir/" install
     popd
-	#cd "$pkgname-$pkgver"
-	#make DESTDIR="$pkgdir/" install
 }
